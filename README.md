@@ -1,6 +1,6 @@
 # Flutter - EOS Nation
 
-> Create an EOSN branded general purpose mobile application (iOS, Android & Web) with the use of [Flutter](https://flutter.dev/).
+> Create an EOS Nation branded general purpose mobile application (iOS, Android & Web) with the use of [Flutter](https://flutter.dev/).
 
 ## Scope
 
