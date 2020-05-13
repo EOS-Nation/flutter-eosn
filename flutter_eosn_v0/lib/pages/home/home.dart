@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttereosnv0/pages/currencyInfo/currencyInfo.dart';
+import 'package:fluttereosnv0/pages/eosDart/eosDart.dart';
 import 'package:fluttereosnv0/services/auth.dart';
 import 'package:fluttereosnv0/services/cryptoCurrencyAPI.dart';
 
@@ -70,9 +71,7 @@ class Home extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          CurrencyInfo(currencies: cryptoCurencies)),
+                  MaterialPageRoute(builder: (context) => EOSDartPage()),
                 );
               },
             ),
