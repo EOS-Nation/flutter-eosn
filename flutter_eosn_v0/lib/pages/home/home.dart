@@ -64,6 +64,18 @@ class Home extends StatelessWidget {
                 );
               },
             ),
+            RaisedButton(
+              color: Theme.of(context).buttonColor,
+              child: Text('eosdart Page'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          CurrencyInfo(currencies: cryptoCurencies)),
+                );
+              },
+            ),
           ],
         ),
       ),
