@@ -54,7 +54,6 @@ class _PingPongState extends State<PingPong> {
                   ),
                   body: Column(
                     children: <Widget>[
-                      //Text(_trxId),
                       SizedBox(
                         height: 20,
                       ),
@@ -98,7 +97,33 @@ class _PingPongState extends State<PingPong> {
                               color: Theme.of(context).buttonColor,
                               child: Text('Clear'),
                               onPressed: () {
-                                _pingPongContract.pushClear();
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: AlertDialog(
+                                              title: Text(
+                                                  'Do you want to clear pings?'),
+                                              actions: <Widget>[
+                                                FlatButton(
+                                                  child: Text('Clear'),
+                                                  onPressed: () {
+                                                    _pingPongContract
+                                                        .pushClear();
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                ),
+                                                FlatButton(
+                                                  child: Text('Cancel'),
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                          )),
+                                );
                               }),
                         ],
                       ),
@@ -108,6 +133,9 @@ class _PingPongState extends State<PingPong> {
                       snapshot.hasError
                           ? Text('Error: ${snapshot.error}',
                               style: TextStyle(fontSize: 20))
+                          // : PingCard(
+                          //     ping: snapshot.data,
+                          //   ),
                           : Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
@@ -136,6 +164,9 @@ class _PingPongState extends State<PingPong> {
                               ],
                             ),
                       Text('Pongs', style: TextStyle(fontSize: 20)),
+                      // PongCard(
+                      //   pongs: snapshot.data.pongs,
+                      // ),
                       ListView.builder(
                         shrinkWrap: true,
                         itemCount: snapshot.data.pongs.length,
