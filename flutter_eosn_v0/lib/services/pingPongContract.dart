@@ -1,5 +1,6 @@
 import 'package:eosdart/eosdart.dart';
 import 'package:fluttereosnv0/models/pings.dart';
+import 'package:fluttereosnv0/models/pongs.dart';
 
 class PingPongContract {
   String nodeURL;
@@ -22,12 +23,17 @@ class PingPongContract {
     try {
       dynamic row =
           await _client.getTableRow('eosnpingpong', 'eosnpingpong', 'pings');
-
+      List<Pongs> pongs = [];
+      if (row['pongs'] is List<dynamic>) {
+        for (var pong in row['pongs']) {
+          pongs.add(Pongs(key: pong['key'], value: pong['value']));
+        }
+      }
       return Pings(
         uid: row['uid'],
         name: row['name'],
         timestamps: row['timestamp'],
-        pongs: row['pongs'],
+        pongs: pongs,
         trxId: row['trx_id'],
       );
     } catch (e) {
@@ -36,7 +42,7 @@ class PingPongContract {
     }
   }
 
-  Future<String> pushPing({String name}) async {
+  Future<String> pushPing({String name = ''}) async {
     try {
       Map data = {
         'name': name,
@@ -60,10 +66,10 @@ class PingPongContract {
     }
   }
 
-  Future<String> pushPong({String trxId = ''}) async {
+  Future<String> pushPong({String account = '', String trxId = ''}) async {
     try {
       Map data = {
-        'account': 'pacoeosnatio',
+        'account': account,
         'trx_id': trxId,
       };
 
