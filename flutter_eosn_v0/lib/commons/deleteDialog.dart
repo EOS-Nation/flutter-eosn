@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 const String defaultDeleteText = 'Are you sure you want to delete';
 
 class DeleteDialog extends StatelessWidget {
+  final Function onDelete;
   final String deleteText;
-  DeleteDialog({this.deleteText = defaultDeleteText});
+  DeleteDialog(this.onDelete, {this.deleteText = defaultDeleteText});
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -29,7 +30,8 @@ class DeleteDialog extends StatelessWidget {
         RaisedButton(
           child: Text('Delete'),
           color: Theme.of(context).buttonColor,
-          onPressed: () {
+          onPressed: () async {
+            await onDelete();
             Navigator.pop(context);
           },
         )

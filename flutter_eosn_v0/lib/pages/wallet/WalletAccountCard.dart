@@ -5,9 +5,11 @@ import 'package:fluttereosnv0/models/walletAccount.dart';
 import 'package:fluttereosnv0/pages/wallet/WalletAccountDialog.dart';
 
 class WalletAccountCard extends StatelessWidget {
+  final Function onDelete;
+  final Function onEdit;
   final WalletAccount walletAccount;
 
-  WalletAccountCard({this.walletAccount});
+  WalletAccountCard({this.onEdit, this.onDelete, this.walletAccount});
 
   @override
   Widget build(BuildContext context) {
@@ -19,13 +21,16 @@ class WalletAccountCard extends StatelessWidget {
                 showDialog(
                     context: context,
                     child: DeleteDialog(
+                      () => onDelete(walletAccount.id),
                       deleteText: 'Do you want to delete this account',
                     ));
               } else if (value == 'edit') {
                 showDialog(
                   context: context,
                   child: WalletAccountdialog(
-                      walletAccount: walletAccount, isNew: true),
+                      onEdit: onEdit,
+                      walletAccount: walletAccount,
+                      isNew: false),
                 );
               }
             },

@@ -2,16 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:fluttereosnv0/models/walletAccount.dart';
 
 class WalletAccountdialog extends StatefulWidget {
+  final Function onAdd;
+  final Function onEdit;
   final WalletAccount walletAccount;
   final bool isNew;
 
-  WalletAccountdialog({this.walletAccount, this.isNew = true});
+  WalletAccountdialog(
+      {this.onEdit, this.onAdd, this.walletAccount, this.isNew = true});
 
   @override
   _WalletAccountdialogState createState() => _WalletAccountdialogState();
 }
 
 class _WalletAccountdialogState extends State<WalletAccountdialog> {
+  String id;
   String accountName;
   String publicKey;
   String privateKey;
@@ -19,6 +23,7 @@ class _WalletAccountdialogState extends State<WalletAccountdialog> {
   @override
   void initState() {
     super.initState();
+    id = widget.walletAccount?.id ?? '';
     accountName = widget.walletAccount?.accountName ?? '';
     publicKey = widget.walletAccount?.publicKey ?? '';
     privateKey = widget.walletAccount?.privateKey ?? '';
@@ -137,9 +142,9 @@ class _WalletAccountdialogState extends State<WalletAccountdialog> {
           color: Theme.of(context).buttonColor,
           onPressed: () {
             if (widget.isNew) {
-              // call create account
+              widget.onAdd(accountName, publicKey, privateKey);
             } else {
-              // call edit account
+              widget.onEdit(id, accountName, publicKey, privateKey);
             }
             Navigator.pop(context);
           },
