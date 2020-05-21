@@ -7,9 +7,11 @@ import 'package:fluttereosnv0/pages/wallet/WalletAccountDialog.dart';
 class WalletAccountCard extends StatelessWidget {
   final Function onDelete;
   final Function onEdit;
+  final Function onSelect;
   final WalletAccount walletAccount;
 
-  WalletAccountCard({this.onEdit, this.onDelete, this.walletAccount});
+  WalletAccountCard(
+      {this.onEdit, this.onDelete, this.onSelect, this.walletAccount});
 
   @override
   Widget build(BuildContext context) {
@@ -64,11 +66,17 @@ class WalletAccountCard extends StatelessWidget {
               ),
             ],
           ),
-          onTap: () => showDialog(
-              context: context,
-              child: SelectDialog(
-                selectText: 'Do you want to use this account',
-              ))),
+          onTap: () {
+            if (onSelect != null) {
+              return showDialog(
+                  context: context,
+                  child: SelectDialog(
+                    onSelect: () => onSelect(walletAccount),
+                    selectText: 'Do you want to use this account',
+                  ));
+            }
+            return null;
+          }),
     );
   }
 }

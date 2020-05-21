@@ -4,26 +4,37 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttereosnv0/models/walletAccount.dart';
 import 'package:uuid/uuid.dart';
 
+const CURRENT_WALLET_ACCOUNT = 'currentWalletAccount';
+
 class WalletManager {
   List<WalletAccount> _walletAccounts = [];
-  FlutterSecureStorage _storage = FlutterSecureStorage();
+  WalletAccount _currentAccount;
+  FlutterSecureStorage _storage;
 
-  WalletAccount accountFromJson(String walletAccountAsString) {
-    try {
-      Map<String, dynamic> map = jsonDecode(walletAccountAsString);
-      return WalletAccount(
-          id: map['id'],
-          publicKey: map['publicKey'],
-          privateKey: map['privateKey'],
-          accountName: map['accountName']);
-    } catch (e) {
-      print(e.toString());
-      throw e.toString();
-    }
+  WalletManager() {
+    this._storage = FlutterSecureStorage();
+    // _storage.deleteAll();
+    this.fetchWalletFromSecureStorage();
+  }
+
+  set currentAccount(WalletAccount account) {
+    this._currentAccount = account;
+    _storage.write(key: CURRENT_WALLET_ACCOUNT, value: account.id);
+  }
+
+  WalletAccount get currentAccount {
+    return _currentAccount;
   }
 
   Future<List<WalletAccount>> fetchWalletFromSecureStorage() async {
     Map<String, String> accounts = await _storage.readAll();
+
+    String currentAccountId = accounts[CURRENT_WALLET_ACCOUNT];
+    if (accounts[currentAccountId] != null) {
+      _currentAccount = accountFromJson(accounts[currentAccountId]);
+      accounts.remove(CURRENT_WALLET_ACCOUNT);
+    }
+
     _walletAccounts = accounts.entries
         .map((account) => accountFromJson(account.value))
         .toList();
@@ -44,7 +55,6 @@ class WalletManager {
         publicKey: publicKey.trim(),
         privateKey: privateKey.trim(),
       );
-      print(account.toString());
       _storage.write(key: id, value: account.toString());
     } catch (e) {
       print(e.toString());
@@ -72,6 +82,20 @@ class WalletManager {
       _storage.delete(key: id);
     } catch (e) {
       print(e.toString());
+    }
+  }
+
+  WalletAccount accountFromJson(String walletAccountAsString) {
+    try {
+      Map<String, dynamic> map = jsonDecode(walletAccountAsString);
+      return WalletAccount(
+          id: map['id'],
+          publicKey: map['publicKey'],
+          privateKey: map['privateKey'],
+          accountName: map['accountName']);
+    } catch (e) {
+      print(e.toString());
+      throw e.toString();
     }
   }
 }

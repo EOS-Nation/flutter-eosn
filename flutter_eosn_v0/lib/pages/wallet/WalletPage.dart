@@ -14,6 +14,7 @@ class WalletPage extends StatefulWidget {
 
 class _WalletPageState extends State<WalletPage> {
   List<WalletAccount> walletAccounts;
+  WalletAccount currentAccount;
   bool isLoading = true;
   @override
   void initState() {
@@ -22,8 +23,8 @@ class _WalletPageState extends State<WalletPage> {
   }
 
   void fetchAccount() async {
-    widget.walletManager.deleteAccount('96122783-dae3-4abb-91b1-cafc38829036');
     walletAccounts = await widget.walletManager.walletAccounts;
+    currentAccount = widget.walletManager.currentAccount;
     setState(() {
       isLoading = false;
     });
@@ -56,6 +57,16 @@ class _WalletPageState extends State<WalletPage> {
       isLoading = true;
     });
     widget.walletManager.deleteAccount(id);
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  void selectAccount(WalletAccount currentAccount) {
+    setState(() {
+      isLoading = true;
+    });
+    widget.walletManager.currentAccount = currentAccount;
     setState(() {
       isLoading = false;
     });
@@ -103,9 +114,15 @@ class _WalletPageState extends State<WalletPage> {
                   SizedBox(
                     height: 5,
                   ),
-                  // WalletAccountCard(
-                  //   walletAccount: walletAccounts[1],
-                  // ),
+                  this.currentAccount != null
+                      ? WalletAccountCard(
+                          onDelete: this.deleteAccount,
+                          onEdit: this.editAccount,
+                          walletAccount: currentAccount,
+                        )
+                      : SizedBox(
+                          height: 0,
+                        ),
                   SizedBox(
                     height: 5,
                   ),
@@ -115,10 +132,10 @@ class _WalletPageState extends State<WalletPage> {
                   ),
                   Expanded(
                       child: WalletAccountList(
-                    walletAccounts: walletAccounts,
-                    onDelete: this.deleteAccount,
-                    onEdit: this.editAccount,
-                  )),
+                          walletAccounts: walletAccounts,
+                          onDelete: this.deleteAccount,
+                          onEdit: this.editAccount,
+                          onSelect: this.selectAccount)),
                 ],
               ),
             ));

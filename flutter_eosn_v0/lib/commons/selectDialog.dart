@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 class SelectDialog extends StatelessWidget {
   final String selectText;
-  SelectDialog({this.selectText = ''});
+  final Function onSelect;
+  SelectDialog({this.onSelect, this.selectText = ''});
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -28,6 +29,7 @@ class SelectDialog extends StatelessWidget {
           child: Text('Select'),
           color: Theme.of(context).buttonColor,
           onPressed: () {
+            onSelect();
             Navigator.pop(context);
           },
         )
