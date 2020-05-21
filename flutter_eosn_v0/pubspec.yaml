@@ -24,6 +24,8 @@ dependencies:
   firebase_auth: ^0.16.0
   flutter_spinkit: ^4.1.2+1
   provider: ^4.0.5+1
+  flutter_secure_storage: ^3.3.3
+  uuid: ^2.0.4
 
 dev_dependencies:
   flutter_test:
