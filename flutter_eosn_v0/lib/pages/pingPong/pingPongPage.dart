@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fluttereosnv0/commons/loading.dart';
 import 'package:fluttereosnv0/models/pings.dart';
-import 'package:fluttereosnv0/models/pongs.dart';
 import 'package:fluttereosnv0/pages/pingPong/ping.dart';
-import 'package:fluttereosnv0/pages/pingPong/pong.dart';
+import 'package:fluttereosnv0/pages/pingPong/pingsExpansionTiles.dart';
 import 'package:fluttereosnv0/services/auth.dart';
 import 'package:fluttereosnv0/services/pingPongContract.dart';
 
@@ -23,8 +22,8 @@ class _PingPongState extends State<PingPong> {
         privateKeys: ["5JaYgZrSCk5aHPR1MPxTnmEdS3nwzV9u9yJ1eEAqabZS7ATrEVp"]);
 
     return FutureBuilder(
-        future: _pingPongContract.getTableRow(),
-        builder: (BuildContext context, AsyncSnapshot<Pings> snapshot) {
+        future: _pingPongContract.getTableRows(),
+        builder: (BuildContext context, AsyncSnapshot<List<Pings>> snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.waiting:
               return Loading();
@@ -68,27 +67,13 @@ class _PingPongState extends State<PingPong> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => Ping(
-                                          pingPongContract: _pingPongContract,
+                                          pushPing: _pingPongContract.pushPing,
                                         )),
                               );
                             },
                           ),
                           SizedBox(
                             width: 10,
-                          ),
-                          RaisedButton(
-                            color: Theme.of(context).buttonColor,
-                            child: Text('Pong'),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Pong(
-                                          pingPongContract: _pingPongContract,
-                                          trxID: snapshot.data.trxId,
-                                        )),
-                              );
-                            },
                           ),
                           SizedBox(
                             width: 10,
@@ -97,32 +82,26 @@ class _PingPongState extends State<PingPong> {
                               color: Theme.of(context).buttonColor,
                               child: Text('Clear'),
                               onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: AlertDialog(
-                                              title: Text(
-                                                  'Do you want to clear pings?'),
-                                              actions: <Widget>[
-                                                FlatButton(
-                                                  child: Text('Clear'),
-                                                  onPressed: () {
-                                                    _pingPongContract
-                                                        .pushClear();
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                ),
-                                                FlatButton(
-                                                  child: Text('Cancel'),
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                ),
-                                              ],
-                                            ),
-                                          )),
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: Text('Do you want to clear pings?'),
+                                    actions: <Widget>[
+                                      FlatButton(
+                                        child: Text('Clear'),
+                                        onPressed: () {
+                                          _pingPongContract.pushClear();
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                      FlatButton(
+                                        child: Text('Cancel'),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
+                                  ),
                                 );
                               }),
                         ],
@@ -133,69 +112,10 @@ class _PingPongState extends State<PingPong> {
                       snapshot.hasError
                           ? Text('Error: ${snapshot.error}',
                               style: TextStyle(fontSize: 20))
-                          // : PingCard(
-                          //     ping: snapshot.data,
-                          //   ),
-                          : Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text('UID: ${snapshot.data.uid}',
-                                    style: TextStyle(fontSize: 20)),
-                                Text('NAME: ${snapshot.data.name}',
-                                    style: TextStyle(fontSize: 20)),
-                                Text('timestamps: ${snapshot.data.timestamps}',
-                                    style: TextStyle(fontSize: 20)),
-                                Row(
-                                  children: <Widget>[
-                                    Text(
-                                      'TRXID: ',
-                                      style: TextStyle(fontSize: 20),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    Flexible(
-                                      child: Text(
-                                        snapshot.data.trxId,
-                                        style: TextStyle(fontSize: 20),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                      Text('Pongs', style: TextStyle(fontSize: 20)),
-                      // PongCard(
-                      //   pongs: snapshot.data.pongs,
-                      // ),
-                      ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: snapshot.data.pongs.length,
-                        itemBuilder: (context, index) {
-                          Pongs pong = snapshot.data.pongs[index];
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Row(
-                                children: <Widget>[
-                                  Text(
-                                    'KEY: ',
-                                    style: TextStyle(fontSize: 20),
-                                  ),
-                                  Flexible(
-                                    child: Text(
-                                      pong.key,
-                                      style: TextStyle(fontSize: 20),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  )
-                                ],
-                              ),
-                              Text('VALUE: ${pong.value}',
-                                  style: TextStyle(fontSize: 20)),
-                            ],
-                          );
-                        },
-                      ),
+                          : PingsExpansionTiles(
+                              pings: snapshot.data,
+                              pushPong: _pingPongContract.pushPong,
+                            )
                     ],
                   ));
           }

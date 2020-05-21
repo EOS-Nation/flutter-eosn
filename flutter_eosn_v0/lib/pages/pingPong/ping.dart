@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fluttereosnv0/commons/loading.dart';
-import 'package:fluttereosnv0/services/pingPongContract.dart';
 
 class Ping extends StatefulWidget {
-  final PingPongContract pingPongContract;
-  Ping({this.pingPongContract});
+  final Function pushPing;
+  Ping({this.pushPing});
   @override
   _PingState createState() => _PingState();
 }
@@ -67,7 +66,7 @@ class _PingState extends State<Ping> {
                           isLoading = true;
                         });
                         try {
-                          await widget.pingPongContract.pushPing(name: name);
+                          await widget.pushPing(name: name);
                           Navigator.pop(context);
                         } catch (e) {
                           setState(() {
