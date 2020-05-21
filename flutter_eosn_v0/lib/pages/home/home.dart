@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttereosnv0/pages/currencyInfo/currencyInfo.dart';
 import 'package:fluttereosnv0/pages/wallet/WalletPage.dart';
+import 'package:fluttereosnv0/pages/pingPong/pingPongPage.dart';
 import 'package:fluttereosnv0/services/auth.dart';
 import 'package:fluttereosnv0/services/cryptoCurrencyAPI.dart';
 
@@ -51,7 +52,7 @@ class Home extends StatelessWidget {
         child: Column(
           children: <Widget>[
             SizedBox(
-              height: 20,
+              height: 40,
             ),
             RaisedButton(
               color: Theme.of(context).buttonColor,
@@ -67,6 +68,16 @@ class Home extends StatelessWidget {
             ),
             SizedBox(
               height: 20,
+            ),
+            RaisedButton(
+              color: Theme.of(context).buttonColor,
+              child: Text('Ping Pong Contract Page'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => PingPong()),
+                );
+              },
             ),
             RaisedButton(
               color: Theme.of(context).buttonColor,
