@@ -79,6 +79,9 @@ class Home extends StatelessWidget {
                 );
               },
             ),
+            SizedBox(
+              height: 20,
+            ),
             RaisedButton(
               color: Theme.of(context).buttonColor,
               child: Text('Wallet'),

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttereosnv0/models/walletAccount.dart';
 import 'package:uuid/uuid.dart';
@@ -7,27 +8,26 @@ import 'package:uuid/uuid.dart';
 const CURRENT_WALLET_ACCOUNT = 'currentWalletAccount';
 
 class WalletManager {
+  static WalletManager _cache;
+  static FlutterSecureStorage _storage;
+
   List<WalletAccount> _walletAccounts = [];
   WalletAccount _currentAccount;
-  FlutterSecureStorage _storage;
 
-  WalletManager() {
-    this._storage = FlutterSecureStorage();
-    // _storage.deleteAll();
-    this.fetchWalletFromSecureStorage();
-  }
-
-  set currentAccount(WalletAccount account) {
-    this._currentAccount = account;
-    _storage.write(key: CURRENT_WALLET_ACCOUNT, value: account.id);
-  }
-
-  WalletAccount get currentAccount {
-    return _currentAccount;
+  static Future<WalletManager> create() async {
+    if (_cache != null) {
+      return _cache;
+    } else {
+      _storage = FlutterSecureStorage();
+      WalletManager walletManager = WalletManager();
+      await walletManager.fetchWalletFromSecureStorage();
+      _cache = walletManager;
+      return walletManager;
+    }
   }
 
   Future<List<WalletAccount>> fetchWalletFromSecureStorage() async {
-    Map<String, String> accounts = await _storage.readAll();
+    Map<String, String> accounts = await _storage?.readAll();
 
     String currentAccountId = accounts[CURRENT_WALLET_ACCOUNT];
     if (accounts[currentAccountId] != null) {
@@ -39,6 +39,15 @@ class WalletManager {
         .map((account) => accountFromJson(account.value))
         .toList();
     return _walletAccounts;
+  }
+
+  WalletAccount get currentAccount {
+    return _currentAccount;
+  }
+
+  set currentAccount(WalletAccount account) {
+    this._currentAccount = account;
+    _storage.write(key: CURRENT_WALLET_ACCOUNT, value: account.id);
   }
 
   Future<List<WalletAccount>> get walletAccounts async {

@@ -1,11 +1,13 @@
 import 'package:eosdart/eosdart.dart';
 import 'package:fluttereosnv0/models/pings.dart';
 import 'package:fluttereosnv0/models/pongs.dart';
+import 'package:fluttereosnv0/services/walletManager.dart';
 
 class PingPongContract {
   String nodeURL;
   String nodeVersion;
   List<String> privateKeys;
+  WalletManager _walletManager;
   EOSClient _client;
 
   List<Authorization> _auth = [
@@ -14,9 +16,15 @@ class PingPongContract {
       ..permission = 'active'
   ];
 
-  PingPongContract(
-      {this.nodeURL, this.nodeVersion = 'v1', this.privateKeys = const []}) {
-    _client = EOSClient(nodeURL, nodeVersion, privateKeys: privateKeys);
+  PingPongContract({this.nodeURL, this.nodeVersion = 'v1'}) {
+    _client = EOSClient(nodeURL, nodeVersion);
+    this.setClientPrivatekey();
+  }
+
+  void setClientPrivatekey() async {
+    this._walletManager = await WalletManager.create();
+    String pk = _walletManager.currentAccount.privateKey;
+    this._client.privateKeys = [pk];
   }
 
   Pings pingFromTableRow(Map<String, dynamic> row) {

@@ -18,8 +18,8 @@ class _PingPongState extends State<PingPong> {
   Widget build(BuildContext context) {
     final AuthService _auth = AuthService();
     _pingPongContract = PingPongContract(
-        nodeURL: 'http://jungle2.cryptolions.io:80',
-        privateKeys: ["5JaYgZrSCk5aHPR1MPxTnmEdS3nwzV9u9yJ1eEAqabZS7ATrEVp"]);
+      nodeURL: 'http://jungle2.cryptolions.io:80',
+    );
 
     return FutureBuilder(
         future: _pingPongContract.getTableRows(),
