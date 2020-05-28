@@ -19,14 +19,18 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  #UI packages
   cupertino_icons: ^0.1.2
-  firebase_auth: ^0.16.0
+  fluttertoast: ^4.0.1
   flutter_spinkit: ^4.1.2+1
+  #EOS packages
+  eosdart: ^0.4.4
+  eosdart_ecc: ^0.4.1
+  #others
+  firebase_auth: ^0.16.0
   provider: ^4.0.5+1
   flutter_secure_storage: ^3.3.3
   uuid: ^2.0.4
-  eosdart: ^0.4.4
-  eosdart_ecc: ^0.4.1
 
 dev_dependencies:
   flutter_test:

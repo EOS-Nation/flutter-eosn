@@ -4,10 +4,23 @@ import 'package:fluttereosnv0/models/EOSNetwork.dart';
 import 'package:fluttereosnv0/models/walletAccount.dart';
 
 class EOSService {
-  static EOSClient _client;
+  static final Map<String, EOSNetwork> eosNetworks = {
+    'jungle2': EOSNetwork('Jungle2', 'https://jungle2.cryptolions.io', 'v2'),
+    'jungle3': EOSNetwork('Jungle3', 'https://jungle2.cryptolions.io', 'v2'),
+    'mainnet': EOSNetwork('Mainet', 'https://jungle2.cryptolions.io', 'v2'),
+  };
+
+  EOSClient _client;
 
   EOSService(EOSNetwork network) {
     _client = EOSClient(
+      network.nodeURL,
+      network.nodeVersion,
+    );
+  }
+
+  void updateEOSClient(EOSNetwork network) {
+    EOSClient(
       network.nodeURL,
       network.nodeVersion,
     );
