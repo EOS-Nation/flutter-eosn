@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttereosnv0/pages/ImportEOSAccount/ImportEOSAccountPage.dart';
 import 'package:fluttereosnv0/pages/currencyInfo/currencyInfo.dart';
 import 'package:fluttereosnv0/pages/wallet/WalletPage.dart';
 import 'package:fluttereosnv0/pages/pingPong/pingPongPage.dart';
@@ -90,6 +91,20 @@ class Home extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) => WalletPage(),
+                    ));
+              },
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            RaisedButton(
+              color: Theme.of(context).buttonColor,
+              child: Text('Import Account'),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ImportEOSAccountPage(),
                     ));
               },
             ),

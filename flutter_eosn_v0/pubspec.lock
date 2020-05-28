@@ -79,7 +79,7 @@ packages:
     source: hosted
     version: "0.4.4"
   eosdart_ecc:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: eosdart_ecc
       url: "https://pub.dartlang.org"

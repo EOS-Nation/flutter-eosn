@@ -26,6 +26,7 @@ dependencies:
   flutter_secure_storage: ^3.3.3
   uuid: ^2.0.4
   eosdart: ^0.4.4
+  eosdart_ecc: ^0.4.1
 
 dev_dependencies:
   flutter_test:

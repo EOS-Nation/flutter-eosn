@@ -1,6 +1,4 @@
 import 'dart:convert';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttereosnv0/models/walletAccount.dart';
 import 'package:uuid/uuid.dart';

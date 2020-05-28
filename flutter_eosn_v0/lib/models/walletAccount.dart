@@ -1,10 +1,18 @@
+import 'package:fluttereosnv0/models/EOSNetwork.dart';
+
 class WalletAccount {
   String id;
+  EOSNetwork network;
   String accountName;
   String publicKey;
   String privateKey;
 
-  WalletAccount({this.accountName, this.publicKey, this.privateKey, this.id});
+  WalletAccount(
+      {this.accountName,
+      this.publicKey,
+      this.privateKey,
+      this.id,
+      this.network});
 
   @override
   String toString() {
