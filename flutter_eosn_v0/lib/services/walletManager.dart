@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttereosnv0/models/walletAccount.dart';
+import 'package:fluttereosnv0/services/EOSService.dart';
 import 'package:uuid/uuid.dart';
 
 const CURRENT_WALLET_ACCOUNT = 'currentWalletAccount';
@@ -13,10 +14,10 @@ class WalletManager {
   WalletAccount _currentAccount;
 
   static Future<WalletManager> create() async {
+    _storage = FlutterSecureStorage();
     if (_cache != null) {
       return _cache;
     } else {
-      _storage = FlutterSecureStorage();
       WalletManager walletManager = WalletManager();
       await walletManager.fetchWalletFromSecureStorage();
       _cache = walletManager;
@@ -26,6 +27,8 @@ class WalletManager {
 
   Future<List<WalletAccount>> fetchWalletFromSecureStorage() async {
     Map<String, String> accounts = await _storage?.readAll();
+
+    if (accounts == null) return [];
 
     String currentAccountId = accounts[CURRENT_WALLET_ACCOUNT];
     if (accounts[currentAccountId] != null) {
@@ -53,14 +56,16 @@ class WalletManager {
     return _walletAccounts;
   }
 
-  void addAccount(String accountName, String publicKey, String privateKey) {
+  void addAccount(String accountName, String publicKey, String eosNetworkName,
+      {String privateKey}) {
     try {
       String id = Uuid().v4();
       WalletAccount account = WalletAccount(
+        accountName.trim(),
+        publicKey.trim(),
+        EOSService.eosNetworks[eosNetworkName],
+        privateKey: privateKey?.trim() ?? '',
         id: id,
-        accountName: accountName.trim(),
-        publicKey: publicKey.trim(),
-        privateKey: privateKey.trim(),
       );
       _storage.write(key: id, value: account.toString());
     } catch (e) {
@@ -95,11 +100,10 @@ class WalletManager {
   WalletAccount accountFromJson(String walletAccountAsString) {
     try {
       Map<String, dynamic> map = jsonDecode(walletAccountAsString);
-      return WalletAccount(
-          id: map['id'],
-          publicKey: map['publicKey'],
-          privateKey: map['privateKey'],
-          accountName: map['accountName']);
+      String networkName = map['networkName'];
+      return WalletAccount(map['accountName'], map['publicKey'],
+          EOSService.eosNetworks[networkName],
+          privateKey: map['privateKey'], id: map['id']);
     } catch (e) {
       print(e.toString());
       throw e.toString();

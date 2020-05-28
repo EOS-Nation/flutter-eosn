@@ -12,22 +12,32 @@ class ImportEOSAccountPage extends StatefulWidget {
 class _ImportEOSAccountPageState extends State<ImportEOSAccountPage> {
   bool isLoading;
   List<WalletAccount> accounts;
+  String eosNetworkName;
 
   @override
   void initState() {
     super.initState();
     isLoading = false;
     accounts = [];
+    eosNetworkName = '';
   }
 
-  void displayAccountSelect(List<WalletAccount> accounts) {
+  void displayAccountSelect(
+      String eosNetworkName, List<WalletAccount> accounts) {
     setState(() {
       isLoading = true;
     });
     setState(() {
       isLoading = false;
       this.accounts = accounts;
+      this.eosNetworkName = eosNetworkName;
     });
+  }
+
+  void importAccounts(List<WalletAccount> accounts) {
+    for (var account in accounts) {
+      print(account.toString());
+    }
   }
 
   @override
@@ -59,7 +69,8 @@ class _ImportEOSAccountPageState extends State<ImportEOSAccountPage> {
               padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 5.0),
               child: accounts.isEmpty
                   ? ImportWithPrivateKeyForm(displayAccountSelect)
-                  : SelectAccountToImport(accounts),
+                  : SelectAccountToImport(
+                      eosNetworkName, accounts, importAccounts),
             ),
           );
   }

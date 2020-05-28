@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:fluttereosnv0/commons/deleteDialog.dart';
-import 'package:fluttereosnv0/commons/selectDialog.dart';
+import 'package:fluttereosnv0/commons/dialog/deleteDialog.dart';
+import 'package:fluttereosnv0/commons/dialog/selectDialog.dart';
 import 'package:fluttereosnv0/models/walletAccount.dart';
 import 'package:fluttereosnv0/pages/wallet/WalletAccountDialog.dart';
 

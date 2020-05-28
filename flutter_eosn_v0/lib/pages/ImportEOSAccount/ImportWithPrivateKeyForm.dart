@@ -39,26 +39,29 @@ class _ImportWithPrivateKeyFormState extends State<ImportWithPrivateKeyForm> {
     eosService = EOSService(EOSService.eosNetworks['jungle2']);
   }
 
-  void showCenterShortErrorToast(String msg) {
+  void showCenterShortToast(String severity, String msg) {
+    Color color;
+    switch (severity) {
+      case 'error':
+        color = Colors.red;
+        break;
+      case 'warning':
+        color = Colors.amber;
+        break;
+      case 'info':
+        color = Colors.green;
+        break;
+      default:
+        color = Colors.redAccent;
+    }
     Fluttertoast.showToast(
         msg: msg ?? '',
         toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
+        gravity: ToastGravity.TOP,
         timeInSecForIosWeb: 1,
-        backgroundColor: Colors.redAccent,
-        textColor: Colors.white,
-        fontSize: 16.0);
-  }
-
-  void showCenterShortWarningToast(String msg) {
-    Fluttertoast.showToast(
-        msg: msg ?? '',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.yellowAccent,
-        textColor: Colors.white,
-        fontSize: 16.0);
+        backgroundColor: color,
+        textColor: Colors.black,
+        fontSize: 20.0);
   }
 
   @override
@@ -130,23 +133,23 @@ class _ImportWithPrivateKeyFormState extends State<ImportWithPrivateKeyForm> {
                     color: Theme.of(context).buttonColor,
                     onPressed: () async {
                       try {
-                        if (eosNetworkName.isEmpty) {
-                          showCenterShortWarningToast(
-                              'Please select a network');
+                        if (eosNetworkName == null || eosNetworkName.isEmpty) {
+                          showCenterShortToast(
+                              'warning', 'Please select a network');
                         } else if (textController.text.isEmpty) {
-                          showCenterShortWarningToast(
-                              'Please enter a private key');
+                          showCenterShortToast(
+                              'warning', 'Please enter a private key');
                         } else {
                           setEOSService(EOSService.eosNetworks[eosNetworkName]);
                           List<WalletAccount> accounts = await eosService
                               .getAccountsFromPrivateKey(textController.text);
-                          widget.displayAccountSelect(accounts);
+                          widget.displayAccountSelect(eosNetworkName, accounts);
                         }
                       } on InvalidKey catch (e) {
-                        showCenterShortErrorToast('Invalid private key');
+                        showCenterShortToast('error', 'Invalid private key');
                         print(e.toString());
                       } catch (e) {
-                        showCenterShortErrorToast(
+                        showCenterShortToast('error',
                             'Error importing accounts with this private key');
                         print(e.toString());
                       }

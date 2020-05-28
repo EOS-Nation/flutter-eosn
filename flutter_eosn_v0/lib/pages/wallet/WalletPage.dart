@@ -7,12 +7,12 @@ import 'package:fluttereosnv0/pages/wallet/WalletAccountList.dart';
 import 'package:fluttereosnv0/services/walletManager.dart';
 
 class WalletPage extends StatefulWidget {
-  final WalletManager walletManager = WalletManager();
   @override
   _WalletPageState createState() => _WalletPageState();
 }
 
 class _WalletPageState extends State<WalletPage> {
+  WalletManager walletManager;
   List<WalletAccount> walletAccounts;
   WalletAccount currentAccount;
   bool isLoading = true;
@@ -23,8 +23,9 @@ class _WalletPageState extends State<WalletPage> {
   }
 
   void fetchAccount() async {
-    walletAccounts = await widget.walletManager.walletAccounts;
-    currentAccount = widget.walletManager.currentAccount;
+    walletManager = await WalletManager.create();
+    walletAccounts = await walletManager.walletAccounts;
+    currentAccount = walletManager.currentAccount;
     setState(() {
       isLoading = false;
     });
@@ -34,7 +35,7 @@ class _WalletPageState extends State<WalletPage> {
     setState(() {
       isLoading = true;
     });
-    widget.walletManager.addAccount(accountName, publicKey, privateKey);
+    walletManager.addAccount(accountName, publicKey, privateKey);
     setState(() {
       isLoading = false;
     });
@@ -45,7 +46,7 @@ class _WalletPageState extends State<WalletPage> {
     setState(() {
       isLoading = true;
     });
-    widget.walletManager.editAccount(id,
+    walletManager.editAccount(id,
         accountName: accountName, publicKey: publicKey, privateKey: privateKey);
     setState(() {
       isLoading = false;
@@ -56,7 +57,7 @@ class _WalletPageState extends State<WalletPage> {
     setState(() {
       isLoading = true;
     });
-    widget.walletManager.deleteAccount(id);
+    walletManager.deleteAccount(id);
     setState(() {
       isLoading = false;
     });
@@ -66,7 +67,7 @@ class _WalletPageState extends State<WalletPage> {
     setState(() {
       isLoading = true;
     });
-    widget.walletManager.currentAccount = currentAccount;
+    walletManager.currentAccount = currentAccount;
     setState(() {
       isLoading = false;
     });

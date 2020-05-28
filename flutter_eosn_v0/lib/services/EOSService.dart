@@ -11,12 +11,14 @@ class EOSService {
   };
 
   EOSClient _client;
+  String _eosNetworkName;
 
   EOSService(EOSNetwork network) {
     _client = EOSClient(
       network.nodeURL,
       network.nodeVersion,
     );
+    _eosNetworkName = network.name;
   }
 
   void updateEOSClient(EOSNetwork network) {
@@ -24,6 +26,7 @@ class EOSService {
       network.nodeURL,
       network.nodeVersion,
     );
+    _eosNetworkName = network.name;
   }
 
   Future<List<WalletAccount>> getAccountsFromPrivateKey(
@@ -33,9 +36,7 @@ class EOSService {
     AccountNames account = await _client.getKeyAccountsV2(publicKey);
     return account.accountNames
         .map((accountName) => WalletAccount(
-              accountName: accountName,
-              publicKey: publicKey,
-            ))
+            accountName.trim(), publicKey.trim(), eosNetworks[_eosNetworkName]))
         .toList();
   }
 
