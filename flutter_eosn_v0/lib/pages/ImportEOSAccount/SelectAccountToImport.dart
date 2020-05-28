@@ -44,7 +44,7 @@ class SelectAccountToImport extends StatelessWidget {
           Expanded(
               child: SelectAccountList(
             walletAccounts: accounts,
-            onSelect: importAccounts,
+            onImport: importAccounts,
           )),
         ],
       ),

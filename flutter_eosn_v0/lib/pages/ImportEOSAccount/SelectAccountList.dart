@@ -3,10 +3,10 @@ import 'package:fluttereosnv0/models/walletAccount.dart';
 import 'package:fluttereosnv0/pages/ImportEOSAccount/SelectAccountCard.dart';
 
 class SelectAccountList extends StatelessWidget {
-  final Function onSelect;
+  final Function onImport;
   final List<WalletAccount> walletAccounts;
 
-  SelectAccountList({this.onSelect, this.walletAccounts});
+  SelectAccountList({this.onImport, this.walletAccounts});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +15,7 @@ class SelectAccountList extends StatelessWidget {
       itemBuilder: (context, index) {
         return SelectAccountCard(
           walletAccount: walletAccounts[index],
-          onSelect: onSelect,
+          onImport: onImport,
         );
       },
     );

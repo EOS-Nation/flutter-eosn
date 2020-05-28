@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttereosnv0/commons/eosToast.dart';
 import 'package:fluttereosnv0/commons/loading.dart';
 import 'package:fluttereosnv0/models/walletAccount.dart';
 import 'package:fluttereosnv0/pages/wallet/WalletAccountCard.dart';
@@ -35,7 +36,8 @@ class _WalletPageState extends State<WalletPage> {
     setState(() {
       isLoading = true;
     });
-    walletManager.addAccount(accountName, publicKey, privateKey);
+    walletManager.addAccount(accountName, publicKey, 'jungle2',
+        privateKey: privateKey);
     setState(() {
       isLoading = false;
     });
@@ -103,42 +105,60 @@ class _WalletPageState extends State<WalletPage> {
               ),
               backgroundColor: Theme.of(context).buttonColor,
             ),
-            body: Container(
-              margin: EdgeInsets.fromLTRB(20.0, 6.0, 20.0, 0.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Text('Current Account'),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  this.currentAccount != null
-                      ? WalletAccountCard(
-                          onDelete: this.deleteAccount,
-                          onEdit: this.editAccount,
-                          walletAccount: currentAccount,
-                        )
-                      : SizedBox(
-                          height: 0,
+            body: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Expanded(
+                  child: Container(
+                    margin: EdgeInsets.fromLTRB(20.0, 6.0, 20.0, 0.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        SizedBox(
+                          height: 5,
                         ),
-                  SizedBox(
-                    height: 5,
+                        Text('Current Account'),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        this.currentAccount != null
+                            ? WalletAccountCard(
+                                onDelete: this.deleteAccount,
+                                onEdit: this.editAccount,
+                                walletAccount: currentAccount,
+                              )
+                            : SizedBox(
+                                height: 0,
+                              ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text('Others'),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Expanded(
+                            child: WalletAccountList(
+                                walletAccounts: walletAccounts,
+                                onDelete: this.deleteAccount,
+                                onEdit: this.editAccount,
+                                onSelect: this.selectAccount)),
+                      ],
+                    ),
                   ),
-                  Text('Others'),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Expanded(
-                      child: WalletAccountList(
-                          walletAccounts: walletAccounts,
-                          onDelete: this.deleteAccount,
-                          onEdit: this.editAccount,
-                          onSelect: this.selectAccount)),
-                ],
-              ),
+                ),
+                RaisedButton(
+                  color: Theme.of(context).buttonColor,
+                  child: Text('Clear Storage'),
+                  onPressed: () {
+                    walletManager.clearSecureStorage();
+                    EOSToast().infoCenterShortToast('Secure Storage Cleared');
+                  },
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+              ],
             ));
   }
 }

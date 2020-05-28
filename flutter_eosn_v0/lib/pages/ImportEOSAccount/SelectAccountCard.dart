@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:fluttereosnv0/commons/dialog/selectDialog.dart';
+import 'package:fluttereosnv0/commons/dialog/importDialog.dart';
 import 'package:fluttereosnv0/models/walletAccount.dart';
 
 class SelectAccountCard extends StatelessWidget {
-  final Function onSelect;
+  final Function onImport;
   final WalletAccount walletAccount;
 
-  SelectAccountCard({this.onSelect, this.walletAccount});
+  SelectAccountCard({this.onImport, this.walletAccount});
 
   @override
   Widget build(BuildContext context) {
@@ -17,14 +17,14 @@ class SelectAccountCard extends StatelessWidget {
             style: TextStyle(fontSize: 20),
           ),
           onTap: () {
-            if (onSelect != null) {
+            if (onImport != null) {
               return showDialog(
                   context: context,
-                  child: SelectDialog(
-                    onSelect: () {
-                      onSelect([walletAccount]);
+                  child: ImportDialog(
+                    onImport: () {
+                      onImport([walletAccount]);
                     },
-                    selectText: 'Do you want to import this account',
+                    text: 'Do you want to import this account',
                   ));
             }
             return null;

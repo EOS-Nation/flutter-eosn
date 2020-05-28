@@ -15,6 +15,6 @@ class WalletAccount {
 
   @override
   String toString() {
-    return '{"id":"${this.id}","publicKey":"${this.publicKey}","privateKey":"${this.privateKey}","accountName":"${this.accountName}","networkName":"${this.network.name}"}';
+    return '{"id":"${this.id}","publicKey":"${this.publicKey}","privateKey":"${this.privateKey}","accountName":"${this.accountName}","networkName":"${this.network?.name}"}';
   }
 }

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class ImportDialog extends StatelessWidget {
-  final String selectText;
-  final Function onSelect;
-  ImportDialog({this.onSelect, this.selectText = ''});
+  final String text;
+  final Function onImport;
+  ImportDialog({this.onImport, this.text = ''});
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -13,7 +13,7 @@ class ImportDialog extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Center(
-            child: Text(selectText),
+            child: Text(text),
           ),
         ],
       ),
@@ -29,7 +29,7 @@ class ImportDialog extends StatelessWidget {
           child: Text('Import'),
           color: Theme.of(context).buttonColor,
           onPressed: () {
-            onSelect();
+            onImport();
             Navigator.pop(context);
           },
         )

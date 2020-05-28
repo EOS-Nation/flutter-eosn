@@ -35,8 +35,9 @@ class EOSService {
 
     AccountNames account = await _client.getKeyAccountsV2(publicKey);
     return account.accountNames
-        .map((accountName) => WalletAccount(
-            accountName.trim(), publicKey.trim(), eosNetworks[_eosNetworkName]))
+        .map((accountName) => WalletAccount(accountName.trim(),
+            publicKey.trim(), eosNetworks[_eosNetworkName.toLowerCase()],
+            privateKey: privateKey))
         .toList();
   }
 

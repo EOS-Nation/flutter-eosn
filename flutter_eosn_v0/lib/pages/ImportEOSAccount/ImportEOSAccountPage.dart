@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:fluttereosnv0/commons/eosToast.dart';
 import 'package:fluttereosnv0/commons/loading.dart';
 import 'package:fluttereosnv0/models/walletAccount.dart';
-import 'package:fluttereosnv0/pages/ImportEOSAccount/ImportWithPrivateKeyForm.dart';
+import 'package:fluttereosnv0/pages/ImportEOSAccount/AccountsFromPrivateKeyForm.dart';
 import 'package:fluttereosnv0/pages/ImportEOSAccount/SelectAccountToImport.dart';
+import 'package:fluttereosnv0/services/walletManager.dart';
 
 class ImportEOSAccountPage extends StatefulWidget {
   @override
@@ -10,6 +12,7 @@ class ImportEOSAccountPage extends StatefulWidget {
 }
 
 class _ImportEOSAccountPageState extends State<ImportEOSAccountPage> {
+  WalletManager walletManager;
   bool isLoading;
   List<WalletAccount> accounts;
   String eosNetworkName;
@@ -20,6 +23,11 @@ class _ImportEOSAccountPageState extends State<ImportEOSAccountPage> {
     isLoading = false;
     accounts = [];
     eosNetworkName = '';
+    this.fetchWalletManager();
+  }
+
+  void fetchWalletManager() async {
+    walletManager = await WalletManager.create();
   }
 
   void displayAccountSelect(
@@ -34,9 +42,23 @@ class _ImportEOSAccountPageState extends State<ImportEOSAccountPage> {
     });
   }
 
-  void importAccounts(List<WalletAccount> accounts) {
+  Future<void> importAccounts(List<WalletAccount> accounts) async {
+    if (accounts == null || accounts.isEmpty) {
+      EOSToast().errorCenterShortToast('Error importing account');
+      return;
+    }
+
     for (var account in accounts) {
-      print(account.toString());
+      if (walletManager.hasAccount(account)) {
+        print('if');
+        EOSToast().infoCenterShortToast('Account already imported');
+      } else {
+        print('else');
+        walletManager.addAccount(
+            account.accountName, account.publicKey, account.network.name,
+            privateKey: account.privateKey);
+        EOSToast().infoCenterShortToast('Import Successful');
+      }
     }
   }
 
@@ -68,7 +90,7 @@ class _ImportEOSAccountPageState extends State<ImportEOSAccountPage> {
             body: Container(
               padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 5.0),
               child: accounts.isEmpty
-                  ? ImportWithPrivateKeyForm(displayAccountSelect)
+                  ? AccountsFromPrivateKeyForm(displayAccountSelect)
                   : SelectAccountToImport(
                       eosNetworkName, accounts, importAccounts),
             ),

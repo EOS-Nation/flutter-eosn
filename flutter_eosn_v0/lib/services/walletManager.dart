@@ -10,8 +10,8 @@ class WalletManager {
   static WalletManager _cache;
   static FlutterSecureStorage _storage;
 
-  List<WalletAccount> _walletAccounts = [];
-  WalletAccount _currentAccount;
+  static List<WalletAccount> _walletAccounts = [];
+  static WalletAccount _currentAccount;
 
   static Future<WalletManager> create() async {
     _storage = FlutterSecureStorage();
@@ -47,13 +47,29 @@ class WalletManager {
   }
 
   set currentAccount(WalletAccount account) {
-    this._currentAccount = account;
+    _currentAccount = account;
     _storage.write(key: CURRENT_WALLET_ACCOUNT, value: account.id);
+  }
+
+  void clearSecureStorage() {
+    _storage.deleteAll();
+    this.fetchWalletFromSecureStorage();
   }
 
   Future<List<WalletAccount>> get walletAccounts async {
     await this.fetchWalletFromSecureStorage();
     return _walletAccounts;
+  }
+
+  bool hasAccount(WalletAccount account) {
+    for (var walletAccount in _walletAccounts) {
+      if (walletAccount.accountName == account.accountName &&
+          walletAccount.publicKey == account.publicKey &&
+          walletAccount.network?.name == account.network.name) {
+        return true;
+      }
+    }
+    return false;
   }
 
   void addAccount(String accountName, String publicKey, String eosNetworkName,
@@ -63,11 +79,12 @@ class WalletManager {
       WalletAccount account = WalletAccount(
         accountName.trim(),
         publicKey.trim(),
-        EOSService.eosNetworks[eosNetworkName],
+        EOSService.eosNetworks[eosNetworkName.toLowerCase()],
         privateKey: privateKey?.trim() ?? '',
         id: id,
       );
       _storage.write(key: id, value: account.toString());
+      this.fetchWalletFromSecureStorage();
     } catch (e) {
       print(e.toString());
     }
@@ -84,6 +101,7 @@ class WalletManager {
       if (privateKey != null) accountToEdit.privateKey = privateKey.trim();
 
       _storage.write(key: id, value: accountToEdit.toString());
+      this.fetchWalletFromSecureStorage();
     } catch (e) {
       print(e.toString());
     }
@@ -92,6 +110,7 @@ class WalletManager {
   void deleteAccount(String id) {
     try {
       _storage.delete(key: id);
+      this.fetchWalletFromSecureStorage();
     } catch (e) {
       print(e.toString());
     }
@@ -99,10 +118,11 @@ class WalletManager {
 
   WalletAccount accountFromJson(String walletAccountAsString) {
     try {
+      print(walletAccountAsString);
       Map<String, dynamic> map = jsonDecode(walletAccountAsString);
       String networkName = map['networkName'];
       return WalletAccount(map['accountName'], map['publicKey'],
-          EOSService.eosNetworks[networkName],
+          EOSService.eosNetworks[networkName.toLowerCase()],
           privateKey: map['privateKey'], id: map['id']);
     } catch (e) {
       print(e.toString());
