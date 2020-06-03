@@ -160,6 +160,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_numpad_widget:
+    dependency: "direct main"
+    description:
+      name: flutter_numpad_widget
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.1"
   flutter_secure_storage:
     dependency: "direct main"
     description:

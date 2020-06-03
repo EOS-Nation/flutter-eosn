@@ -26,6 +26,7 @@ class WalletManager {
   }
 
   Future<List<WalletAccount>> fetchWalletFromSecureStorage() async {
+    // this.clearSecureStorage();
     Map<String, String> accounts = await _storage?.readAll();
 
     if (accounts == null) return [];

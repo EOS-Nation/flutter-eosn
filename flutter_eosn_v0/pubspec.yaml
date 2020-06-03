@@ -23,6 +23,7 @@ dependencies:
   cupertino_icons: ^0.1.2
   fluttertoast: ^4.0.1
   flutter_spinkit: ^4.1.2+1
+  flutter_numpad_widget: ^0.1.1
   #EOS packages
   eosdart: ^0.4.4
   eosdart_ecc: ^0.4.1

@@ -108,6 +108,9 @@ class Home extends StatelessWidget {
                     ));
               },
             ),
+            SizedBox(
+              height: 20,
+            ),
           ],
         ),
       ),
