@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttereosnv0/commons/eosToast.dart';
 import 'package:fluttereosnv0/commons/loading.dart';
 import 'package:fluttereosnv0/models/walletAccount.dart';
+import 'package:fluttereosnv0/pages/ImportEOSAccount/ImportEOSAccountPage.dart';
 import 'package:fluttereosnv0/pages/wallet/WalletAccountCard.dart';
-import 'package:fluttereosnv0/pages/wallet/WalletAccountDialog.dart';
 import 'package:fluttereosnv0/pages/wallet/WalletAccountList.dart';
 import 'package:fluttereosnv0/services/walletManager.dart';
 
@@ -23,7 +23,7 @@ class _WalletPageState extends State<WalletPage> {
     this.fetchAccount();
   }
 
-  void fetchAccount() async {
+  Future<void> fetchAccount() async {
     walletManager = await WalletManager.create();
     walletAccounts = await walletManager.walletAccounts;
     currentAccount = walletManager.currentAccount;
@@ -32,45 +32,22 @@ class _WalletPageState extends State<WalletPage> {
     });
   }
 
-  void addAccount(String accountName, String publicKey, String privateKey) {
-    setState(() {
-      isLoading = true;
-    });
-    walletManager.addAccount(accountName, publicKey, 'jungle2',
-        privateKey: privateKey);
-    setState(() {
-      isLoading = false;
-    });
-  }
-
-  void editAccount(
-      String id, String accountName, String publicKey, String privateKey) {
-    setState(() {
-      isLoading = true;
-    });
-    walletManager.editAccount(id,
-        accountName: accountName, publicKey: publicKey, privateKey: privateKey);
-    setState(() {
-      isLoading = false;
-    });
-  }
-
   void deleteAccount(String id) {
-    setState(() {
-      isLoading = true;
-    });
     walletManager.deleteAccount(id);
+    if (currentAccount?.id == id) {
+      currentAccount = null;
+    }
     setState(() {
+      walletAccounts.removeWhere((element) => element.id == id);
       isLoading = false;
     });
   }
 
   void selectAccount(WalletAccount currentAccount) {
-    setState(() {
-      isLoading = true;
-    });
+    setState(() => isLoading = true);
     walletManager.currentAccount = currentAccount;
     setState(() {
+      this.currentAccount = currentAccount;
       isLoading = false;
     });
   }
@@ -95,10 +72,14 @@ class _WalletPageState extends State<WalletPage> {
               actions: <Widget>[],
             ),
             floatingActionButton: FloatingActionButton(
-              onPressed: () => showDialog(
-                context: context,
-                child: WalletAccountdialog(isNew: true, onAdd: this.addAccount),
-              ),
+              onPressed: () async {
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ImportEOSAccountPage()),
+                );
+                this.fetchAccount();
+              },
               child: Icon(
                 Icons.add,
                 color: Colors.white,
@@ -124,7 +105,6 @@ class _WalletPageState extends State<WalletPage> {
                         this.currentAccount != null
                             ? WalletAccountCard(
                                 onDelete: this.deleteAccount,
-                                onEdit: this.editAccount,
                                 walletAccount: currentAccount,
                               )
                             : SizedBox(
@@ -141,7 +121,6 @@ class _WalletPageState extends State<WalletPage> {
                             child: WalletAccountList(
                                 walletAccounts: walletAccounts,
                                 onDelete: this.deleteAccount,
-                                onEdit: this.editAccount,
                                 onSelect: this.selectAccount)),
                       ],
                     ),
@@ -153,6 +132,9 @@ class _WalletPageState extends State<WalletPage> {
                   onPressed: () {
                     walletManager.clearSecureStorage();
                     EOSToast().infoCenterShortToast('Secure Storage Cleared');
+                    setState(() {
+                      walletAccounts = [];
+                    });
                   },
                 ),
                 SizedBox(

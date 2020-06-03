@@ -6,47 +6,23 @@ import 'package:fluttereosnv0/pages/wallet/WalletAccountDialog.dart';
 
 class WalletAccountCard extends StatelessWidget {
   final Function onDelete;
-  final Function onEdit;
   final Function onSelect;
   final WalletAccount walletAccount;
 
-  WalletAccountCard(
-      {this.onEdit, this.onDelete, this.onSelect, this.walletAccount});
+  WalletAccountCard({this.onDelete, this.onSelect, this.walletAccount});
 
   @override
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
-          trailing: PopupMenuButton<String>(
-            onSelected: (value) {
-              if (value == 'delete') {
-                showDialog(
-                    context: context,
-                    child: DeleteDialog(
-                      () => onDelete(walletAccount.id),
-                      deleteText: 'Do you want to delete this account',
-                    ));
-              } else if (value == 'edit') {
-                showDialog(
+          trailing: IconButton(
+              icon: Icon(Icons.delete),
+              onPressed: () => showDialog(
                   context: context,
-                  child: WalletAccountdialog(
-                      onEdit: onEdit,
-                      walletAccount: walletAccount,
-                      isNew: false),
-                );
-              }
-            },
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                value: 'delete',
-                child: Text("Delete"),
-              ),
-              PopupMenuItem(
-                value: 'edit',
-                child: Text("Edit"),
-              ),
-            ],
-          ),
+                  child: DeleteDialog(
+                    () => onDelete(walletAccount.id),
+                    deleteText: 'Do you want to delete this account',
+                  ))),
           title: Text(
             walletAccount.accountName,
             style: TextStyle(fontSize: 20),

@@ -4,12 +4,10 @@ import 'package:fluttereosnv0/pages/wallet/WalletAccountCard.dart';
 
 class WalletAccountList extends StatelessWidget {
   final Function onDelete;
-  final Function onEdit;
   final Function onSelect;
   final List<WalletAccount> walletAccounts;
 
-  WalletAccountList(
-      {this.onEdit, this.onDelete, this.onSelect, this.walletAccounts});
+  WalletAccountList({this.onDelete, this.onSelect, this.walletAccounts});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +17,6 @@ class WalletAccountList extends StatelessWidget {
         return WalletAccountCard(
           walletAccount: walletAccounts[index],
           onDelete: onDelete,
-          onEdit: onEdit,
           onSelect: onSelect,
         );
       },

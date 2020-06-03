@@ -50,16 +50,15 @@ class _ImportEOSAccountPageState extends State<ImportEOSAccountPage> {
 
     for (var account in accounts) {
       if (walletManager.hasAccount(account)) {
-        print('if');
         EOSToast().infoCenterShortToast('Account already imported');
       } else {
-        print('else');
         walletManager.addAccount(
             account.accountName, account.publicKey, account.network.name,
             privateKey: account.privateKey);
         EOSToast().infoCenterShortToast('Import Successful');
       }
     }
+    Navigator.pop(context);
   }
 
   @override
@@ -82,7 +81,7 @@ class _ImportEOSAccountPageState extends State<ImportEOSAccountPage> {
                   : IconButton(
                       icon: Icon(Icons.arrow_back),
                       onPressed: () => setState(() {
-                            return this.accounts = [];
+                            Navigator.pop(context);
                           })),
               title: Text('Import Accounts'),
               actions: <Widget>[],

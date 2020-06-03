@@ -23,7 +23,7 @@ class PingPongContract {
 
   void setClientPrivatekey() async {
     this._walletManager = await WalletManager.create();
-    String pk = _walletManager.currentAccount.privateKey;
+    String pk = _walletManager.currentAccount?.privateKey;
     this._client.privateKeys = [pk];
   }
 

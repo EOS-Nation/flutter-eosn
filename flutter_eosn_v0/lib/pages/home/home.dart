@@ -97,20 +97,6 @@ class Home extends StatelessWidget {
             SizedBox(
               height: 20,
             ),
-            RaisedButton(
-              color: Theme.of(context).buttonColor,
-              child: Text('Import Account'),
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ImportEOSAccountPage(),
-                    ));
-              },
-            ),
-            SizedBox(
-              height: 20,
-            ),
           ],
         ),
       ),

@@ -26,7 +26,7 @@ class WalletManager {
   }
 
   Future<List<WalletAccount>> fetchWalletFromSecureStorage() async {
-    // this.clearSecureStorage();
+    //this.clearSecureStorage();
     Map<String, String> accounts = await _storage?.readAll();
 
     if (accounts == null) return [];
@@ -34,8 +34,10 @@ class WalletManager {
     String currentAccountId = accounts[CURRENT_WALLET_ACCOUNT];
     if (accounts[currentAccountId] != null) {
       _currentAccount = accountFromJson(accounts[currentAccountId]);
-      accounts.remove(CURRENT_WALLET_ACCOUNT);
+    } else {
+      _storage.delete(key: CURRENT_WALLET_ACCOUNT);
     }
+    accounts.remove(CURRENT_WALLET_ACCOUNT);
 
     _walletAccounts = accounts.entries
         .map((account) => accountFromJson(account.value))
@@ -49,7 +51,11 @@ class WalletManager {
 
   set currentAccount(WalletAccount account) {
     _currentAccount = account;
-    _storage.write(key: CURRENT_WALLET_ACCOUNT, value: account.id);
+    if (account == null) {
+      _storage.delete(key: CURRENT_WALLET_ACCOUNT);
+    } else {
+      _storage.write(key: CURRENT_WALLET_ACCOUNT, value: account.id);
+    }
   }
 
   void clearSecureStorage() {
@@ -108,9 +114,12 @@ class WalletManager {
     }
   }
 
-  void deleteAccount(String id) {
+  void deleteAccount(String id) async {
     try {
-      _storage.delete(key: id);
+      if (this.currentAccount != null && this.currentAccount?.id == id) {
+        this.currentAccount = null;
+      }
+      await _storage.delete(key: id);
       this.fetchWalletFromSecureStorage();
     } catch (e) {
       print(e.toString());
@@ -119,7 +128,6 @@ class WalletManager {
 
   WalletAccount accountFromJson(String walletAccountAsString) {
     try {
-      print(walletAccountAsString);
       Map<String, dynamic> map = jsonDecode(walletAccountAsString);
       String networkName = map['networkName'];
       return WalletAccount(map['accountName'], map['publicKey'],
