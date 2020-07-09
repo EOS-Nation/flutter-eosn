@@ -2,20 +2,61 @@ import 'package:flutter/material.dart';
 import 'package:myapp/models/pings.dart';
 import 'package:myapp/models/pongs.dart';
 import 'package:myapp/pages/pingPong/pong.dart';
+import 'package:flutter/services.dart';
+import 'package:dart_esr/dart_esr.dart' as esrDart;
+import 'package:myapp/commons/eosToast.dart';
 
-class PingsExpansionTiles extends StatelessWidget {
+class PingsExpansionTiles extends StatefulWidget {
   final List<Pings> pings;
   final Function pushPong;
 
   PingsExpansionTiles({this.pings, this.pushPong});
 
   @override
+  _PingsExpansionTilesState createState() => _PingsExpansionTilesState();
+}
+
+class _PingsExpansionTilesState extends State<PingsExpansionTiles> {
+  var esr;
+  String encodedRequest;
+
+  @override
+  void initState() {
+    super.initState();
+    this.initESR();
+  }
+
+  void initESR() async {
+    esr = esrDart.EOSIOSigningrequest('https://jungle2.cryptolions.io', 'v1',
+        chainName: esrDart.ChainName.EOS_JUNGLE2);
+    encodedRequest = '';
+  }
+
+  Future<void> encodePong() async {
+    var auth = <esrDart.Authorization>[
+      esrDart.Authorization.fromJson(esrDart.ESRConstants.PlaceholderAuth)
+    ];
+
+    var data = <String, String>{'name': ''};
+
+    var action = esrDart.Action()
+      ..account = 'eosnpingpong'
+      ..name = 'ping'
+      ..authorization = auth
+      ..data = data;
+    var temp = await esr.encodeAction(action);
+    setState(() {
+      encodedRequest = temp;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Expanded(
       child: ListView.builder(
-          itemCount: pings.length,
+          itemCount: widget.pings.length,
           itemBuilder: (context, index) {
-            Pings ping = pings[index];
+            Pings ping = widget.pings[index];
             return ExpansionTile(
                 title: Text(ping.name.isNotEmpty ? ping.name : ping.uid),
                 children: <Widget>[
@@ -83,19 +124,59 @@ class PingsExpansionTiles extends StatelessWidget {
                                 ],
                               );
                             }),
-                        RaisedButton(
-                          color: Theme.of(context).buttonColor,
-                          child: Text('Pong'),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => Pong(
-                                        pushPong: pushPong,
-                                        trxID: ping.trxId,
-                                      )),
-                            );
-                          },
+                        Row(
+                          children: [
+                            RaisedButton(
+                              color: Theme.of(context).buttonColor,
+                              child: Text('Pong'),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Pong(
+                                            pushPong: widget.pushPong,
+                                            trxID: ping.trxId,
+                                          )),
+                                );
+                              },
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            RaisedButton(
+                              color: Theme.of(context).buttonColor,
+                              child: Text('Pong ESR'),
+                              onPressed: () async {
+                                await encodePong();
+                                return showDialog(
+                                    context: context,
+                                    child: AlertDialog(
+                                        content: Row(
+                                      children: <Widget>[
+                                        Flexible(
+                                            child: Text(
+                                          encodedRequest,
+                                          overflow: TextOverflow.clip,
+                                        )),
+                                        encodedRequest.isNotEmpty
+                                            ? IconButton(
+                                                icon: Icon(Icons.content_copy),
+                                                onPressed: () async {
+                                                  await Clipboard.setData(
+                                                      new ClipboardData(
+                                                          text:
+                                                              encodedRequest));
+                                                  EOSToast()
+                                                      .infoCenterShortToast(
+                                                          'Copied to Clipboard');
+                                                },
+                                              )
+                                            : SizedBox(),
+                                      ],
+                                    )));
+                              },
+                            ),
+                          ],
                         ),
                       ],
                     ),

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:dart_esr/dart_esr.dart' as esrDart;
+import 'package:myapp/commons/eosToast.dart';
 import 'package:myapp/commons/loading.dart';
 
 class Ping extends StatefulWidget {
@@ -11,11 +14,39 @@ class Ping extends StatefulWidget {
 class _PingState extends State<Ping> {
   bool isLoading;
   String name;
+  var esr;
+  String encodedRequest;
+
   @override
   void initState() {
     super.initState();
     isLoading = false;
     name = '';
+    this.initESR();
+  }
+
+  void initESR() async {
+    esr = esrDart.EOSIOSigningrequest('https://jungle2.cryptolions.io', 'v1',
+        chainName: esrDart.ChainName.EOS_JUNGLE2);
+    encodedRequest = '';
+  }
+
+  Future<void> encodePing() async {
+    var auth = <esrDart.Authorization>[
+      esrDart.Authorization.fromJson(esrDart.ESRConstants.PlaceholderAuth)
+    ];
+
+    var data = <String, String>{'name': name};
+
+    var action = esrDart.Action()
+      ..account = 'eosnpingpong'
+      ..name = 'ping'
+      ..authorization = auth
+      ..data = data;
+    var temp = await esr.encodeAction(action);
+    setState(() {
+      encodedRequest = temp;
+    });
   }
 
   @override
@@ -74,7 +105,33 @@ class _PingState extends State<Ping> {
                           });
                         }
                       },
-                    )
+                    ),
+                    RaisedButton(
+                      child: Text('Ping ESR'),
+                      onPressed: () {
+                        encodePing();
+                      },
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Flexible(
+                            child: Text(
+                          encodedRequest,
+                          overflow: TextOverflow.clip,
+                        )),
+                        encodedRequest.isNotEmpty
+                            ? IconButton(
+                                icon: Icon(Icons.content_copy),
+                                onPressed: () async {
+                                  await Clipboard.setData(
+                                      new ClipboardData(text: encodedRequest));
+                                  EOSToast().infoCenterShortToast(
+                                      'Copied to Clipboard');
+                                },
+                              )
+                            : SizedBox(),
+                      ],
+                    ),
                   ],
                 ),
               ),
