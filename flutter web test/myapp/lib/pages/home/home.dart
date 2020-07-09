@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/pages/currencyInfo/currencyInfo.dart';
 import 'package:myapp/pages/esr/esr.dart';
+import 'package:myapp/services/auth.dart';
 import 'package:myapp/services/cryptoCurrencyAPI.dart';
 
 class Home extends StatelessWidget {
@@ -14,7 +15,7 @@ class Home extends StatelessWidget {
     CryptoCurrencyAPI(currencyName: 'litecoin')
   ];
 
-  // final AuthService _auth = AuthService();
+  final AuthService _auth = AuthService();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,7 +40,7 @@ class Home extends StatelessWidget {
                 style: TextStyle(color: Colors.white),
               ),
               onPressed: () async {
-                // await _auth.signOut();
+                await _auth.signOut();
               },
             ),
           )
