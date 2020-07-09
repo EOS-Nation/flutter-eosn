@@ -93,20 +93,20 @@ packages:
       path: "."
       ref: HEAD
       resolved-ref: "3657dbb4362f5022cd36064e8ab8aee12d7a1fe5"
-      url: "https://github.com/EOS-Nation/dart-esr"
+      url: "https://github.com/EOS-Nation/dart-esr.git"
     source: git
     version: "0.1.0"
   eosdart:
-    dependency: transitive
+    dependency: "direct main"
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "09816f6dd2133ba259895063148ee2a38ca507d6"
+      resolved-ref: "641ad907cab0c442a1d83a7c49438db82f951ad2"
       url: "https://github.com/TheRealPaco/eosdart.git"
     source: git
     version: "0.4.4"
   eosdart_ecc:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: eosdart_ecc
       url: "https://pub.dartlang.org"

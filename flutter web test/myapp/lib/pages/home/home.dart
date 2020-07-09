@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/pages/currencyInfo/currencyInfo.dart';
 import 'package:myapp/pages/esr/esr.dart';
+import 'package:myapp/pages/wallet/WalletPage.dart';
 import 'package:myapp/services/auth.dart';
 import 'package:myapp/services/cryptoCurrencyAPI.dart';
 
@@ -78,6 +79,20 @@ class Home extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) => ESR(),
+                    ));
+              },
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            RaisedButton(
+              color: Theme.of(context).buttonColor,
+              child: Text('Wallet'),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => WalletPage(),
                     ));
               },
             ),

@@ -27,8 +27,13 @@ dependencies:
   flutter_spinkit: ^4.1.2+1
   http: ^0.12.1
   uuid: ^2.2.0
+  eosdart:
+    git: 
+      url: https://github.com/TheRealPaco/eosdart.git
   dart_esr:
-    git: https://github.com/EOS-Nation/dart-esr
+    git: 
+      url: https://github.com/EOS-Nation/dart-esr.git
+  eosdart_ecc: ^0.4.0
   provider: ^4.0.5+1
   firebase_auth:
   
