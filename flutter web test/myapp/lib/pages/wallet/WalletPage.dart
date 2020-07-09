@@ -61,13 +61,9 @@ class _WalletPageState extends State<WalletPage> {
             appBar: AppBar(
               backgroundColor: Theme.of(context).primaryColorDark,
               elevation: 0.0,
-              leading: Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/eos_nation_logo.png'),
-                    fit: BoxFit.fill,
-                  ),
-                ),
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () => Navigator.pop(context),
               ),
               title: Text('Wallet'),
               actions: <Widget>[],
