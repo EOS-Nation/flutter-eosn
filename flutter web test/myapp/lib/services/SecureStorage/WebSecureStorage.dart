@@ -19,6 +19,7 @@ class WebSecureStorage implements SecureStorageInterface {
     if (_storage.containsKey(key)) {
       return _storage[key];
     }
+    return null;
   }
 
   @override
