@@ -87,6 +87,7 @@ class _AccountsFromPrivateKeyFormState
                     color: Theme.of(context).buttonColor,
                     onPressed: () async {
                       EOSToast toast = EOSToast();
+                      var atLeastOneKeyFound = false;
                       for (var network in EOSService.eosNetworks.values) {
                         try {
                           if (textController.text.isEmpty) {
@@ -98,15 +99,16 @@ class _AccountsFromPrivateKeyFormState
                             List<WalletAccount> accounts = await eosService
                                 .getAccountsFromPrivateKey(textController.text);
                             widget.addAccounts(network.name, accounts);
+                            atLeastOneKeyFound = true;
                           }
                         } on InvalidKey catch (e) {
                           toast.errorCenterShortToast('Invalid private key');
                           print(e.toString());
-                        } catch (e) {
-                          toast.errorCenterShortToast(
-                              'Error importing accounts with this private key');
-                          print(e.toString());
                         }
+                      }
+                      if (atLeastOneKeyFound) {
+                        toast.errorCenterShortToast(
+                            'Error importing accounts with this private key');
                       }
                       widget.toggleSelectAccountPage();
                     },
