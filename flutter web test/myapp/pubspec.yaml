@@ -36,6 +36,8 @@ dependencies:
   eosdart_ecc: ^0.4.0
   provider: ^4.0.5+1
   firebase_auth:
+  url_launcher: ^5.1.4
+  url_launcher_web: ^0.1.0
   
 
   # The following adds the Cupertino Icons font to your application.

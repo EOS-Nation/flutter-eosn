@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:dart_esr/dart_esr.dart' as esrDart;
 import 'package:myapp/commons/eosToast.dart';
 import 'package:myapp/commons/loading.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Ping extends StatefulWidget {
   final Function pushPing;
@@ -14,7 +15,7 @@ class Ping extends StatefulWidget {
 class _PingState extends State<Ping> {
   bool isLoading;
   String name;
-  var esr;
+  esrDart.EOSIOSigningrequest esr;
   String encodedRequest;
 
   @override
@@ -29,6 +30,7 @@ class _PingState extends State<Ping> {
     esr = esrDart.EOSIOSigningrequest('https://jungle2.cryptolions.io', 'v1',
         chainName: esrDart.ChainName.EOS_JUNGLE2);
     encodedRequest = '';
+    esr.setOtherFields(callback: 'https://flutter-eosn-v0.web.app/#/');
   }
 
   Future<void> encodePing() async {
@@ -127,6 +129,19 @@ class _PingState extends State<Ping> {
                                       new ClipboardData(text: encodedRequest));
                                   EOSToast().infoCenterShortToast(
                                       'Copied to Clipboard');
+                                },
+                              )
+                            : SizedBox(),
+                        encodedRequest.isNotEmpty
+                            ? IconButton(
+                                icon: Icon(Icons.link),
+                                onPressed: () async {
+                                  var url = encodedRequest;
+                                  if (url.startsWith('esr://')) {
+                                    await launch(url);
+                                  } else {
+                                    print('Wrong Protocol');
+                                  }
                                 },
                               )
                             : SizedBox(),
